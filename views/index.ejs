@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>CLIPS</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="img/clips.ico" />
+
+    <link href="https://fonts.googleapis.com/earlyaccess/nanummyeongjo.css" rel="stylesheet" type="text/css">
+  	<link href="https://fonts.googleapis.com/earlyaccess/notosanskr.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+    <link rel="stylesheet" href="plugins/dragula/dragula.min.css" />
+    <link rel="stylesheet" href="plugins/json2html/json2html.css" />
+    <link href="plugins/intro/introjs.css" rel="stylesheet">
+
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.js"
+    integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+    crossorigin="anonymous"></script>
+    <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+    <script type="text/javascript" src="plugins/dragula/dragula.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <script defer type="text/javascript" src="js/index.js"></script>
+    <script src="plugins/twbsPagination/jquery.twbsPagination.min.js" type="text/javascript"></script>
+    <script src="plugins/json2html/jquery.json2html.js" type="text/javascript"></script>
+    <script src="plugins/json2html/json2html.js" type="text/javascript"></script>
+    <script src="plugins/json2html/index.js" type="text/javascript"></script>
+    <script src="plugins/intro/intro.js"></script>
+
+    <style media="screen">
+      body {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0px;
+        width: 100%;
+        height: 100%;
+      }
+
+      button {
+        border-color: #ddd !important;
+        border-radius: 4px !important;
+      }
+      button:hover, button:focus, button:visited {
+        outline: none !important;
+        background: white !important;
+      }
+
+      input:focus {
+        border: 1px solid rgba(90, 180, 90, .5) !important;
+        box-shadow: 0px 0px 3px rgba(90, 180, 90, .3) !important;
+      }
+
+      .group:hover {
+        border-color: #ccc !important;
+      }
+      .group:focus {
+        outline: none !important;
+        border-color: #ccc !important;
+      }
+      .group:visited, .active {
+        border-color: #ccc !important;
+      }
+
+      #container {
+        padding: 0 30px;
+        margin: auto auto 50px;
+        /*max-width: 1024px;*/
+        height: auto;
+        overflow: hidden;
+      }
+
+      @media screen and (max-width: 500px) {
+        #container {
+          padding: 0 15px;
+        }
+      }
+
+      #visual-data {
+        padding: 10px 5px;
+        position: relative;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        text-align: center;
+        overflow: hidden;
+        cursor: grab;
+      }
+      #visual-data #arrow {
+        position: relative;
+        float: left;
+        width: 3%;
+      }
+      #visual-data #arrow div {
+        position: absolute;
+        top: 7px;
+        left: 14px;
+        width: 1px;
+        height: 96.5%;
+        margin: auto;
+        border-right: 2.2px dashed;
+        border-image: linear-gradient(to top, rgb(180, 180, 180), rgba(0, 0, 0, 0)) 1 100%;
+      }
+      #visual-data #arrow span {
+        position: absolute;
+        bottom: 0px;
+        left: -4.8px;
+        width: 12px;
+        height: 12px;
+        transform: rotate(45deg);
+        border-right: 3px solid rgb(180, 180, 180);
+        border-bottom: 3px solid rgb(180, 180, 180);
+      }
+      #visual-data #sortable {
+        width: 100%;
+        padding-left: 35px;
+      }
+      #visual-data #sortable > div:first-child {
+        margin: 0 !important;
+      }
+      #visual-data #sortable > div {
+        margin: .5% 0 0;
+        width: 100%;
+        padding: 6px 3px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: grab;
+        cursor: -webkit-grab;
+        word-break: break-all;
+      }
+
+      .container > div {
+        cursor: grab;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+      }
+      .gu-mirror {
+        text-align: center;
+        cursor: grabbing;
+        cursor: -moz-grabbing;
+        cursor: -webkit-grabbing;
+      }
+
+      .sortable-text .num {
+        float: left;
+        padding: 0 10px;
+        font-weight: 600;
+      }
+
+      .sortable-text .tag {
+        position: relative;
+        top: -1px;
+        float: right;
+        padding: 3px 10px;
+        font-weight: 500;
+        color: white;
+        border-radius: 4px;
+        font-size: 12px;
+        text-transform: capitalize;
+      }
+
+      @media screen and (max-width: 400px) {
+        .sortable-text .tag {
+          display: none;
+        }
+      }
+
+      #tree-diagram {
+        position: relative;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        text-align: center;
+        overflow: hidden;
+      }
+
+      #zoomInterface {
+        position: absolute;
+        top: 15px;
+        right: 18px;
+        border-radius: 4px;
+        box-shadow: 1px 1px 1px #e0e0e0;
+      }
+      #zoomInterface div {
+        width: 100%;
+        cursor: pointer;
+      }
+      #zoomInterface div button {
+        width: 100%;
+        padding: 0;
+        color: #777;
+        padding: 4px 9px;
+      }
+      #zoomInterface div button:hover {
+        color: #444;
+      }
+      #zoomInterface div:first-child button {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        border-bottom: none;
+        width: 100%;
+      }
+      #zoomInterface div:last-child button {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+        width: 100%;
+      }
+      #zoomInterface div i {
+        position: relative;
+        top: 2px;
+        font-size: 15px;
+      }
+
+      .display-none {
+        display: none;
+      }
+
+      .loading-bg, #ban-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+      }
+      .loading-bg div, #ban-bg a div {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        word-break: break-all;
+      }
+
+      .loading-bg {
+        background-color: rgba(255, 255, 255, .7);
+      }
+      .loading-bg div {
+        width: 60px;
+        height: 65px;
+      }
+      .loading-bg div img {
+        width: 100%;
+      }
+
+      #ban-bg {
+        background-color: rgba(0, 0, 0, .35);
+      }
+      #ban-bg a {
+        color: #f3f3f3;
+      }
+      #ban-bg a:hover {
+        color: white;
+      }
+      #ban-bg a div {
+        height: 50px;
+      }
+      #ban-bg a div, #ban-bg a div label {
+        cursor: pointer;
+      }
+
+      #ui-id-1 {
+        position: absolute;
+        padding: 0;
+        list-style: none;
+        background-color: white;
+        border: 1px solid #eee;
+        max-height: 300px;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      #ui-id-1 li div {
+        padding: 3px 14px;
+        font-size: 16px;
+        cursor: pointer;
+        border-color: transparent !important;
+      }
+
+      .ui-helper-hidden-accessible {
+        display: none;
+      }
+
+      /*#footer{
+        clear: both;
+        margin: 10px 0 40px;
+        overflow: hidden;
+        font-size: 11px;
+        font-family: 'Crimson Text', serif;
+        color: #777777;
+      }
+      #footer > img{
+        margin-right: 3px;
+        width: 60px;
+        float: left;
+      }*/
+
+      circle {
+        transform: scale(1);
+        transition: transform .5s;
+      }
+      circle:hover {
+        transform: scale(1.1);
+      }
+
+      circle[fill="#eee"] {
+        cursor: default !important;
+      }
+      circle[fill="#eee"]:hover {
+        transform: scale(1) !important;
+      }
+
+      .circle2:hover {
+        transform: scale(1) !important;
+      }
+
+      .search {
+        stroke: #ff1616;
+      }
+
+      .box {
+        padding: 0px;
+        overflow-x: auto;
+      }
+
+      @media screen and (max-width: 500px) {
+        .list-card {
+          min-width: 500px !important;
+        }
+      }
+
+      .card {
+        padding: 25px;
+        width: 100%;
+        background-color: white;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .sub_title {
+        color: #6e6e6e;
+        font-size: 12px;
+      }
+
+      .filter-tag {
+        display: inline-block;
+        margin: 0px 2px 5px;
+        padding: 0 9px 0 10px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        font-size: 16px;
+        color: #666;
+      }
+      .filter-tag .filter-content {
+        padding-right: 5px;
+      }
+      .filter-tag .delete {
+        font-weight: 500;
+        font-size: 21px;
+        color: #aaa;
+      }
+      .filter-tag .delete:hover {
+        color: red;
+      }
+
+      #header {
+        overflow: hidden;
+      }
+      #header a img {
+        float: left;
+        margin-right: 15px;
+        width: auto;
+        height: 62px;
+      }
+      #header a div {
+        float: left;
+      }
+      #header a div h1, #header a div p {
+        margin: 0;
+      }
+      #header a div h1 {
+        font-size: 40px;
+        letter-spacing: 3px;
+        font-weight: 500;
+        font-family: 'Lora', serif;
+        color: black;
+      }
+      #header a div p {
+        font-size: 13px;
+        font-weight: 500;
+        color: #333;
+        letter-spacing: 0px;
+        font-family: 'Lora', serif;
+      }
+
+      #header-list {
+        overflow: hidden;
+      }
+      #header-list div {
+        width: 20%;
+        float: left;
+        padding: 7px 0;
+        border-bottom: 2px solid #eee;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      #result-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+      #result-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        overflow: hidden;
+        text-align: center;
+      }
+      #result-list li div {
+        width: 20%;
+        float: left;
+        color: #555;
+        cursor: pointer;
+      }
+      #result-list li div:hover {
+        width: 20%;
+        float: left;
+        color: black;
+      }
+
+      .pagination {
+        margin: 28px 0 0 !important;
+      }
+      .pagination > li.active > a {
+        background: rgb(90, 180, 90);
+        color: #fff;
+      }
+      .pagination > li.active > a {
+        outline: none;
+        border-color: transparent !important;
+      }
+      .pagination > li.active > a:visited, .pagination > li.active > a:hover, .pagination > li.active > a:focus {
+        background: rgb(90, 180, 90) !important;
+      }
+      .pagination > li > a, .pagination > li > span {
+        color: black;
+      }
+
+      .fa-external-link {
+        position: relative;
+        top: 1px;
+        margin-right: 5px;
+      }
+
+      #tooltip {
+        display: none;
+        position: absolute;
+        padding: 4px 8px 3px;
+        background-color: white;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        /*box-shadow: 1px 1px 1px #e9e9e9;*/
+        text-align: center;
+        font-size: 11px;
+        color: black;
+      }
+
+      @media screen and (max-width: 991px) {
+        #filter-box {
+          clear: both !important;
+          padding: 0 !important;
+          margin-top: 40px !important;
+        }
+      }
+
+      #guide {
+        position: relative;
+        top: 0px;
+        right: 0px;
+        float: right;
+        font-size: 16px;
+        color: #333;
+        cursor: pointer;
+        font-family: 'Lora';
+      }
+      #guide:hover {
+        color: rgb(50, 140, 50);
+      }
+
+      @media screen and (max-width: 960px) {
+        #guide {
+          display: none;
+        }
+      }
+
+      .introjs-hint-pulse {
+        border: 5px solid rgba(100, 210, 100, .2) !important;
+      }
+      .introjs-hint:hover > .introjs-hint-pulse {
+        border: 5px solid rgba(100, 210, 100, .5) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <br><br>
+      <div id="header">
+        <a href="/" style="text-decoration: none;">
+          <img src="img/clips.png">
+          <div>
+            <h1>CLIPS</h1>
+            <p>CLInical Protocol Database System</p>
+          </div>
+        </a>
+        <div id="guide" onclick="intro()" show="false">
+          <i class="fa fa-book"></i>
+          <span>Guide Book</span>
+        </div>
+      </div>
+      <br><br>
+      <button id="order" data-toggle="collapse" data-target="#collapse"
+        style="clear: both; margin: 0; padding: 0; border: none; background-color: transparent">
+        <label style="cursor: pointer !important"
+        data-hint="<b>클릭</b>하시면 프로토콜의 순서를 결정할 수 있는 인터페이스를 볼 수 있습니다.<br>
+        <b>마우스 드래그</b>를 이용하여 프로토콜의 순서를 결정할 수 있습니다.<br>"
+        data-hintPosition="top-middle"
+        data-position="bottom-left-aligned">Protocol order<i class="fa fa-angle-down" style="margin-left: 6px"></i></label>
+      </button><br>
+      <script>
+        $(document).on('hidden.bs.collapse', function() {
+          var temp = $('#order').children('label').children('i');
+          temp.attr('class', 'fa fa-angle-up');
+        })
+
+        var arrowCheck = null;
+
+        $(document).on('show.bs.collapse', function() {
+          arrowCheck = setInterval(function() {
+            $('#arrow').css('height', $('#sortable').height());
+          }, 10);
+        })
+
+        $(document).on('shown.bs.collapse', function() {
+          clearInterval(arrowCheck);
+          arrowCheck = null;
+        })
+
+        $('#order').click(function() {
+          var temp = $(this).children('label').children('i');
+          if(temp.attr('class').indexOf('fa fa-angle-down') != 0) {
+            temp.attr('class', 'fa fa-angle-down');
+          }
+        })
+      </script>
+      <div id="collapse" class="collapse" style="overflow: hidden">
+        <div id="visual-data" style="margin-bottom: 5px; overflow: hidden">
+          <div id="arrow">
+            <div>
+              <span></span>
+            </div>
+          </div>
+          <script>
+            $(document).ready(function() {
+              $('#arrow').css('height', $('#sortable').height());
+
+              $(window).resize(function() {
+                $('#arrow').css('height', $('#sortable').height());
+              })
+            })
+          </script>
+          <div id="sortable">
+            <% for(var i=0; i<data.length; i++) { %>
+              <div class="sortable-text">
+                <span class="num"><%= i + 1 %>.</span>
+                <span class="sub-sortable-text"><%= data[i].nodeName.substr(0,1).toUpperCase() + data[i].nodeName.substr(1) %></span>
+                <% if(data[i].nodeTypeName == 'design') { %>
+                  <span class="tag" style="background-color: rgb(190, 190, 190)">
+                    <%= data[i].nodeTypeName %>
+                  </span>
+                <% } else if(data[i].nodeTypeName == 'subjects') { %>
+                  <span class="tag" style="background-color: rgb(90, 180, 90)">
+                    <%= data[i].nodeTypeName %>
+                  </span>
+                <% } else if(data[i].nodeTypeName == 's_issues') { %>
+                  <span class="tag" style="background-color: rgb(240, 190, 80)">
+                    <%= data[i].nodeTypeName %>
+                  </span>
+                <% } %>
+              </div>
+            <% } %>
+          </div>
+        </div>
+        <button id="send-order-btn" type="button" class="btn btn-default" style="float: right"
+        data-hint="버튼을 <b>클릭</b>하면 프로토콜의 순서를 결정하여 아래 시각화 인터페이스에 적용해 줍니다."
+        data-hintPosition="middle-middle"
+        data-position="bottom-right-aligned">Complete</button><br>
+      </div>
+      <script>
+        dragula([document.getElementById('sortable')])
+        .on('drop', function () {
+          $('.num').each(function(index) {
+            $(this).text((index + 1) + '.');
+          })
+        })
+      </script>
+
+      <br><br>
+      <label style="clear: both"
+      data-hint="서버로 보내줄 프로토콜의 순서와 값을 정해주는 인터페이스입니다.<br>
+      <b>줌, 팬, 클릭</b>을 통하여 해당 프로토콜의 값을 보고 선택해 줄 수 있습니다."
+      data-hintPosition="top-middle"
+      data-position="bottom-left-aligned">Protocol Finder</label>
+      <div>
+        <div class="col-md-8" style="padding: 0;">
+          <div id="graph" style="margin-bottom: 5px; border-radius: 4px">
+            <div id="tree-diagram">
+              <div id="zoomInterface">
+                <div><button id="zoom-in" class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i></button></div>
+                <div><button id="zoom-out" class="btn btn-default"><i class="fa fa-minus" aria-hidden="true"></i></button></div>
+              </div>
+              <div id="ban-bg">
+                <a id="top-scroll">
+                  <div>
+                    <i class="fa fa-hand-pointer-o" style="font-size: 26px;"></i><br>
+                    <label style="position: relative; padding-top: 10px; font-size: 16px; font-weight: 400; font-family: 'Merriweather Sans', sans-serif;">Please set your Protocol order first.</label>
+                  </div>
+                </a>
+              </div>
+
+              <div id="alert" class="display-none" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto; padding: 10px; width: 200px; height: 61px; background-color: rgba(0, 0, 0, .5); color: white; border-radius: 4px; font-family: 'Merriweather Sans', sans-serif;">
+                <p style="margin: 0; padding: 0; font-weight: 400;">This is last point.<br>Go back and search again.</p>
+              </div>
+              <script type="text/javascript">
+                $( document ).ready(function() {
+                  $("#top-scroll").click(function() {
+                    $('#collapse').collapse('show');
+                    $('#arrow').css('height', $('#sortable').height())
+                    $('html, body').animate({
+                      scrollTop: $("#container").offset().top
+                    }, 400);
+                  });
+                });
+              </script>
+              <div class="loading-bg display-none">
+                <div>
+                  <img style="padding-right: 3px" src="img/loader.gif">
+                  <label style="position: relative; top: -10px; font-size: 12px; font-weight: 500">Loading..</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-group" style="float: right">
+            <button id="save-btn" type="button" class="btn btn-default" style="margin-right: 5px" disabled
+            data-hint="버튼을 <b>클릭</b>하면 지금까지 선택한 프로토콜 노드의 값을 저장할 수 있게 합니다."
+            data-hintPosition="middle-middle"
+            data-position="top">Clips</button>
+            <button id="table-btn" type="button" class="btn btn-default" disabled
+            data-hint="버튼을 <b>클릭</b>하면 지금까지 선택한 프로토콜 순서 및 값을 바탕으로 해당되는 테이블을 불러옵니다."
+            data-hintPosition="middle-middle"
+            data-position="top">Complete</button><br>
+          </div>
+        </div><br>
+        <div class="col-md-4" style="padding: 0">
+          <div id="filter-box" style="padding-left: 30px; overflow: hidden">
+            <label class="sub_title" style="margin-bottom: 15px"
+            data-hint="선택된 프로토콜에 필터를 적용하는 인터페이스 입니다.<br>
+            <b>엔터키</b>를 이용하여 필터를 추가해줄 수 있습니다."
+            data-hintPosition="top-middle"
+            data-position="bottom-middle-aligned">Semantic Filtering on Searched Clinical Protocols</label><br>
+            <input id="filter" type="text" class="form-control" style="margin-bottom: 5px">
+            <div id="key-box"></div>
+            <script>
+              $('#filter').keyup(function(e) {
+                if(e.keyCode == 13) {
+                  $.ajax({
+                    type: 'POST',
+                    url: '/data/clipsner',
+                    // async: false,
+                    data: {
+                      "queryString" : $(this).val()
+                    },
+                    success: function(returnData) {
+                      $('#key-box').append(`
+                        <span data='${JSON.stringify(returnData)}' class="filter-tag">
+                          <span class="filter-content" style="position:relative; top: -1px;">${$('#filter').val()}</span>
+                          <span class="delete" style="position:relative; top: 1px; cursor: pointer;">×</span>
+                        </span>
+                      `);
+
+                      $('#filter').val('');
+
+                      if(tour != undefined) {
+                        tour.refresh();
+                      }
+                    }
+                  })
+                }
+              })
+
+              $(document).on('click', '.delete', function() {
+                $(this).parent().remove();
+                if(tour != undefined) {
+                  tour.refresh();
+                }
+              })
+            </script>
+            <button id="filter-btn" type="button" class="btn btn-default" style="float: right"
+            data-hint="버튼을 <b>클릭</b>선택된 필터값을 바탕으로 필터링을 하여 그에 해당되는 결과를 테이블에 반영합니다."
+            data-hintPosition="middle-middle"
+            data-position="bottom-right-aligned">Filtering</button>
+          </div>
+        </div>
+      </div>
+
+      <style>
+        .save-number {
+          position: absolute;
+          display: block;
+          top: 5px;
+          left: 13px;
+          font-size: 1.8vw;
+          font-weight: 600;
+          color: #aaa;
+        }
+        .save-card {
+          position: relative;
+          border: solid 1px #eee;
+          border-radius: 4px;
+          overflow: hidden;
+          margin-bottom: 10PX;
+          cursor: pointer;
+        }
+        .save-card .close {
+          position: absolute;
+          display: block;
+          top: 5px;
+          right: 10px;
+          font-weight: 500;
+          font-size: 1.8vw;
+          color: #aaa !important;
+          opacity: 1;
+        }
+        .save-card .close:hover {
+          color: red !important;
+        }
+
+        @media screen and (max-width: 500px) {
+          .save-number {
+            visibility: hidden;
+          }
+          .save-card .close {
+            top: 2px;
+            right: 5px;
+          }
+        }
+      </style>
+      <div id="save-box" style="clear: both; margin-top: 21px"><br></div>
+
+      <div id="result-box" class="display-none" style="clear: both;">
+        <br><br>
+        <label style="clear: both"
+        data-hint="프로토콜의 순서와 값에 따른 테이블 결과입니다.<br>
+        테이블 내의 값을 <b>클릭</b>하면 보다 상세한 정보를 볼 수 있습니다."
+        data-hintPosition="top-middle"
+        data-position="bottom-left-aligned">Protocol DataBase</label>
+        <div style="padding-bottom: 3px; overflow: hidden">
+          <div class="col-md-12 box" style="border-radius: 4px;">
+            <div class="loading-bg display-none">
+              <div>
+                <img style="padding-right: 3px" src="img/loader.gif">
+                <label style="position: relative; top: -10px; font-size: 12px; font-weight: 500">Loading..</label>
+              </div>
+            </div>
+            <div class="card list-card">
+              <label class="sub_title">List</label><br>
+              <div id="header-list">
+                <div>nct_id</div>
+                <div>design</div>
+                <div>subject</div>
+                <div>variable</div>
+                <div>sissue</div>
+              </div>
+              <ul id="result-list" style="margin-bottom: 5px; width: 100%;">
+                <li class="result-list">
+                  <div style="color: black !important; cursor: default">sissue</div>
+                  <div data-toggle="modal" data-target="#modal-page" data='{"type":"interventional","number_of_arms":2,"number_of_groups":null,"model":"Crossover Assignment","allocation":"Randomized","time_perspective":null,"masking":"Double Blind","masked_role":["Subject","Outcomes Assessor"],"primary_purpose":"Basic Science","endpoint_classification":"Safety/Efficacy Study","design_group":[{"group_label":"Sham tDCS","group_type":"Sham Comparator","description":"Subjects will undergo 20 minutes of sham tDCS stimulation.","intervention_type":"Device","intervention_name":"Transcranial Direct Current Stimulation (tDCS)","intervention_other_name":["1x1 direct current stimulator; Soterix Medical"],"intervention_desc":"Subjects will undergo 2 sessions of 20 minutes of tDCS stimulation (either active or sham)in a randomized order - each session will be separated by at least one week to prevent carry-over effects."}, {"group_label":"Active tDCS","group_type":"Experimental","description":"Subjects will undergo 20 minutes of active tDCS stimulation.","intervention_type":"Device","intervention_name":"Transcranial Direct Current Stimulation (tDCS)","intervention_other_name":["1x1 direct current stimulator; Soterix Medical"],"intervention_desc":"Subjects will undergo 2 sessions of 20 minutes of tDCS stimulation (either active or sham)in a randomized order - each session will be separated by at least one week to prevent carry-over effects."}]}'>
+                  <i class="fa fa-external-link"></i>design</div>
+                  <div data-toggle="modal" data-target="#modal-page"><i class="fa fa-external-link"></i>subject</div>
+                  <div data-toggle="modal" data-target="#modal-page"><i class="fa fa-external-link"></i>variable</div>
+                  <div data-toggle="modal" data-target="#modal-page"><i class="fa fa-external-link"></i>sissue</div>
+                </li>
+              </ul>
+
+              <div class="modal fade" id="modal-page" role="dialog">
+                <div class="modal-dialog">
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <h4 class="modal-title">Modal Header</h4>
+                    </div>
+                    <div style="position: relative">
+                      <div class="modal-body">
+                        <p>Some text in the modal.</p>
+                      </div>
+                      <div class="loading-bg display-none">
+                        <div>
+                          <img style="padding-right: 3px" src="img/loader.gif">
+                          <label style="position: relative; top: -10px; font-size: 12px; font-weight: 500">Loading..</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="pagination" style="float: right"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="tooltip">
+      <label style="margin: 0; font-weight: 700; color: #777">studies</label><br>
+      <span id="tooltip-text" style="font-size: 16px"></span>
+    </div>
+    <script>
+      var tour, index = 0;
+
+      function intro() {
+        if($(window).width() >= '943') {
+          if(index == 0) {
+            tour = introJs().addHints()
+            tour.setOptions();
+          }
+          if($(this).attr('show') == 'true') {
+            tour.hideHints();
+
+            $(this).attr('show', 'false');
+          } else {
+            tour.showHints();
+            if($('#result-box').css('display') != 'block') {
+              tour.hideHint(1);
+              if($('#collapse').attr('class').indexOf('in') != -1) {
+                tour.hideHint(7);
+              }
+            }
+            index = 1;
+
+            $(this).attr('show', 'true');
+          }
+        } else {
+          alert('가이드 서비스는 960px 이상의 해상도에서 실행됩니다.')
+        }
+      }
+
+      $(document).on('show.bs.collapse', function() {
+        arrowCheck2 = setInterval(function() {
+          if(tour != undefined) {
+            tour.refresh();
+          }
+        }, 10);
+      })
+
+      $(document).on('shown.bs.collapse', function() {
+        clearInterval(arrowCheck2);
+        if(tour != undefined) {
+          tour.showHint(1);
+          arrowCheck2 = null;
+        }
+      })
+
+      $(document).on('hide.bs.collapse', function() {
+        arrowCheck2 = setInterval(function() {
+          if(tour != undefined) {
+            tour.refresh();
+            tour.hideHint(1);
+          }
+        }, 10);
+      })
+
+      $(document).on('hidden.bs.collapse', function() {
+        clearInterval(arrowCheck2);
+        arrowCheck2 = null;
+      })
+
+      $(window).resize(function() {
+        if($(window).width() < '943') {
+          if(tour) {
+            tour.hideHints();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

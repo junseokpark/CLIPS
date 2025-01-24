@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>rus</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="img/clips.ico" />
+
+    <link href="https://fonts.googleapis.com/earlyaccess/nanummyeongjo.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/earlyaccess/notosanskr.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+    <link rel="stylesheet" href="plugins/json2html/json2html.css" />
+    <style media="screen">
+      body {
+        margin: 0;
+      }
+
+      a {
+        color: black;
+      }
+      a:focus, a:visited, a:hover {
+        color: black;
+        text-decoration: none;
+      }
+
+      #result-list a {
+        color: cornflowerblue;
+      }
+
+      #appwrap #app {
+        margin: 30px auto;
+        max-height: 300px;
+        padding: 0 15px;
+      }
+
+      #appwrap #app div #search {
+        position: relative;
+      }
+
+      #appwrap #app div #search div {
+        padding: 0 100px 0 0;
+      }
+
+      #appwrap #app div #search div textarea {
+        font-size: 21px;
+        resize: none;
+      }
+
+      #appwrap #app div #search button {
+        position: absolute;
+        padding: 6px 16px;
+        font-size: 18px;
+        top: 0;
+        right: 0;
+        height: 46px;
+      }
+      #appwrap #app div #search button:focus {
+        outline: none;
+        border-color: #4cae4c;
+      }
+
+      .filter-tag {
+        display: inline-block;
+        margin: 0px 2px 5px;
+        padding: 5px 15px 3px 15px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        font-size: 24px;
+        color: #666;
+      }
+      .filter-tag .filter-content {
+        padding-right: 5px;
+      }
+      .filter-tag .delete {
+        font-weight: 500;
+        font-size: 24px;
+        color: #aaa;
+      }
+      .filter-tag .delete:hover {
+        color: red;
+      }
+      .display-none {
+        display: none;
+      }
+
+      .loading-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+      }
+      .loading-bg div {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        word-break: break-all;
+      }
+
+      .loading-bg {
+        background-color: rgba(255, 255, 255, .7);
+      }
+      .loading-bg div {
+        width: 60px;
+        height: 65px;
+      }
+      .loading-bg div img {
+        width: 100%;
+      }
+
+      #header {
+        overflow: hidden;
+      }
+      #header a img {
+        float: left;
+        margin-right: 15px;
+        width: auto;
+        height: 62px;
+      }
+      #header a div {
+        float: left;
+      }
+      #header a div h1, #header a div p {
+        margin: 0;
+      }
+      #header a div h1 {
+        font-size: 40px;
+        letter-spacing: 3px;
+        font-weight: 500;
+        font-family: 'Lora', serif;
+        color: black;
+      }
+      #header a div p {
+        font-size: 13px;
+        font-weight: 500;
+        color: #333;
+        letter-spacing: 0px;
+        font-family: 'Lora', serif;
+      }
+
+      #header-list {
+        overflow: hidden;
+      }
+      #header-list div {
+        width: 14%;
+        float: left;
+        padding: 7px 0;
+        border-bottom: 2px solid #eee;
+        text-align: center;
+        font-weight: 600;
+      }
+      #header-list div:nth-child(2) {
+        width: 30%;
+      }
+
+      #result-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+      #result-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        overflow: hidden;
+        text-align: center;
+      }
+      #result-list li div {
+        width: 14%;
+        float: left;
+        color: #555;
+        cursor: pointer;
+      }
+      #result-list li div:nth-child(2) {
+        width: 30%;
+        text-align: left;
+      }
+      #result-list li div:hover {
+        float: left;
+        color: black;
+      }
+
+      .pagination {
+        margin: 28px 0 0 !important;
+      }
+      .pagination > li.active > a {
+        background: rgb(90, 180, 90);
+        color: #fff;
+      }
+      .pagination > li.active > a {
+        outline: none;
+        border-color: transparent !important;
+      }
+      .pagination > li.active > a:visited, .pagination > li.active > a:hover, .pagination > li.active > a:focus {
+        background: rgb(90, 180, 90) !important;
+      }
+      .pagination > li > a, .pagination > li > span {
+        color: black;
+      }
+
+      #save-vis {
+        position: relative;
+        border: solid 1px #eee;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 0 15px 10px;
+        cursor: pointer;
+      }
+
+      .result-list {
+        cursor: pointer;
+      }
+      .result-list:hover {
+        background: #eee;
+      }
+    </style>
+
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.js"
+    integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+    crossorigin="anonymous"></script>
+    <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="plugins/twbsPagination/jquery.twbsPagination.min.js" type="text/javascript"></script>
+    <script src="plugins/json2html/jquery.json2html.js" type="text/javascript"></script>
+    <script src="plugins/json2html/json2html.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <div id="appwrap">
+      <div>
+        <div id="app">
+          <div style="margin-bottom: 10px;">
+            <a href="/rus"><h1><b><i class="fa fa-superpowers" aria-hidden="true"></i>&nbsp;RUS</b></h1></a>
+            <div id="search">
+              <div>
+                <input id="search-input" class="form-control input-lg" placeholder="Search..."></input>
+              </div>
+              <button id="filtering" type="button" class="btn btn-success btn-md">Search</button>
+            </div>
+          </div>
+          <div id="key-box" style="padding: 0;"></div>
+        </div>
+      </div>
+      <!-- end col -->
+    </div>
+    <!-- end row -->
+
+    <div id="node-box">
+      <div class="save-card">
+        <label id="save-vis-title" style="padding: 0 15px; margin-bottom: 5px"></label>
+        <div id="save-vis" style="display: none"></div>
+      </div>
+    </div>
+
+    <div id="result-box" style="clear: both; margin-bottom: 30px">
+      <br><br>
+      <div style="float: right; margin-right: 30px">
+        <label>Total Result:&nbsp;</label>
+        <span id="total-num">0</span>
+      </div>
+      <div style="padding-bottom: 3px; overflow: hidden; clear: both">
+        <label id="temp" style="clear: both; padding: 0 15px;">Clinical Studies</label><br><br>
+        <div class="box" style="position: relative; border-radius: 4px; padding: 0 15px;">
+          <div class="loading-bg display-none">
+            <div>
+              <img style="padding-right: 3px" src="img/loader.gif">
+              <label style="position: relative; top: -10px; font-size: 12px; font-weight: 500">Loading..</label>
+            </div>
+          </div>
+
+          <div class="card list-card">
+            <label class="sub_title">List</label><br>
+            <div id="header-list">
+              <div>nct_id</div>
+              <div>official_title</div>
+              <div>phase</div>
+              <div>startDate</div>
+              <div>completeDate</div>
+              <div>overallStatus</div>
+            </div>
+            <ul id="result-list" style="margin-bottom: 5px; width: 100%;">
+              <p style="padding: 35px 0 0; text-align: center; font-size: 16px; color: #444">No result!</p>
+            </ul>
+
+            <div id="pagination" style="float: right"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var dataset, duplicateCheck = 0;
+      $('#search-input').keyup(function(e) {
+        duplicateCheck = 0;
+        if(e.keyCode == 13) {
+          if($(this).val() != '') {
+            $('.filter-tag').each(function() {
+              var text = $(this).children('.filter-content').text();
+              text = $.trim(text);
+              if(text == $('#search-input').val()) {
+                duplicateCheck = 1;
+              }
+            })
+
+            if(duplicateCheck == 0) {
+              $.ajax({
+                type: 'POST',
+                url: '/data/clipsner',
+                // async: false,
+                data: {
+                  "queryString" : $(this).val()
+                },
+                success: function(returnData) {
+                  if(returnData.status != 500) {
+                    if(returnData[0].value != '') {
+                      $('#key-box').append(`
+                        <span data='${JSON.stringify(returnData)}' class="filter-tag">
+                          <span class="filter-content" style="position:relative; top: -1px;">${$('#search-input').val()}</span>
+                          <span class="delete" style="position:relative; top: 1px; cursor: pointer;">×</span>
+                        </span>
+                      `);
+
+                      $('#search-input').val('');
+                    } else {
+                      alert('Please check your keyword')
+                    }
+                  } else {
+                    alert('Please check your keyword')
+                  }
+                }
+              })
+            }
+          }
+        }
+      })
+
+      var semanticFilters = [], semanticFiltersIndex = 0;
+      $(document).on('click', '#filtering', function() {
+        if($('#key-box').text() != '') {
+          semanticFilters = [];
+          semanticFiltersIndex = 0;
+          $('.filter-tag').each(function(index) {
+            var temp = JSON.parse($(this).attr('data'));
+
+            for(var i = 0; i < temp.length; i++) {
+              semanticFilters[semanticFiltersIndex] = {
+                "typeName": temp[i].typeName,
+                "value": temp[i].value
+              };
+              semanticFiltersIndex++;
+            }
+          })
+
+          var data = {
+            "semanticFilters": semanticFilters
+          }
+          data = JSON.stringify(data);
+
+          $.ajax({
+            type: 'POST',
+            url: '/data/table-rus',
+            // async: false,
+            data: {
+              data: data
+            },
+            beforeSend:function() {
+              $('.loading-bg').removeClass('display-none');
+            },
+            complete:function() {
+              $('.loading-bg').addClass('display-none');
+            },
+            success: function(returnData) {
+              $('#total-num').text(returnData.length)
+
+              var temp = '';
+              for(var i = 0; i < returnData.length; i++) {
+                temp += `<li class="result-list" data='${JSON.stringify(returnData[i].structure)}'>
+                  <div style="color: black !important; cursor: default"><a target="_blank" href="${returnData[i].url}">${returnData[i].nct_id}</a></div>
+                  <div>${returnData[i].official_title}</div>
+                  <div>${returnData[i].phase}</div>
+                  <div>${returnData[i].startDate}</div>
+                  <div>${returnData[i].completeDate}</div>
+                  <div>${returnData[i].overallStatus}</div>
+                </li>`
+              }
+
+              $('#result-list').html(temp);
+
+              $('.result-list').css('display', 'none');
+              for(var i = 0; i < 10; i++) {
+                $('#result-list li').eq(i).css('display', 'block');
+              }
+
+              if(returnData.length != 0) {
+                $('#pagination').css('display', 'block');
+
+                var obj = $('#pagination').twbsPagination({
+                  totalPages: Math.ceil(returnData.length/10),
+                  visiblePages: 5,
+                  onPageClick: function (event, page) {
+                    var temp = (page - 1)*10;
+                    $('.result-list').css('display', 'none');
+                    for(var i = 0; i < 10; i++) {
+                      $('#result-list li').eq(temp + i).css('display', 'block');
+                    }
+                  }
+                });
+
+                var $pagination = $('#pagination');
+
+                var currentPage = $pagination.twbsPagination('getCurrentPage');
+                $pagination.twbsPagination('destroy');
+                $pagination.twbsPagination($.extend({}, {
+                  totalPages: Math.ceil(returnData.length/10),
+                  visiblePages: 5,
+                  onPageClick: function (event, page) {
+                    var temp = (page - 1)*10;
+                    $('.result-list').css('display', 'none');
+                    for(var i = 0; i < 10; i++) {
+                      $('#result-list li').eq(temp + i).css('display', 'block');
+                    }
+                  }
+                }, {
+                  startPage: currentPage,
+                  totalPages: Math.ceil(returnData.length/10)
+                }));
+              } else {
+                $('#pagination').css('display', 'none');
+                $('#result-list').html(`
+                  <p style="padding: 35px 0 0; text-align: center; font-size: 16px; color: #444">No result!</p>
+                `);
+              }
+            }
+          })
+        } else {
+          alert('Please input search word')
+        }
+      })
+
+      $(document).on('click', '.delete', function() {
+        $(this).parent().remove();
+      })
+
+      $(document).on('mouseover', '.result-list', function() {
+        $(this).css('background-color', '#eee');
+      }).on('mouseout', '.result-list', function() {
+        $(this).css('background-color', 'white');
+      })
+
+      $(document).on('click', '.result-list', function() {
+        $('.result-list').css('background-color', 'white');
+        $(this).css('background-color', '#eee');
+
+        $('#save-vis').fadeIn();
+        $('#save-vis-title').text('Clinical Protocol Information ' + $(this).children().first().text())
+
+        var getDataset = JSON.parse($(this).attr('data'));
+        dataset = {
+          "name": "type",
+          "children": []
+        }
+
+        var tempIndex = 0;
+        function setData(datasetC) {
+          if(Object.keys(getDataset)[tempIndex] != undefined) {
+            datasetC.push({
+              "name": (Object.values(getDataset)[tempIndex] == null)? 'null' : Object.values(getDataset)[tempIndex],
+              "value": Object.keys(getDataset)[tempIndex],
+              "children": []
+            })
+            tempIndex++;
+
+            console.log(datasetC.children);
+
+            setData(datasetC[0].children);
+          } else {
+            return;
+          }
+        }
+        setData(dataset.children);
+
+        console.log(dataset);
+
+        // dataset = {
+        //   "name": "type",
+        //   "children": [{
+        //     "name": "interventional",
+        //     "value": "Type",
+        //     "children": [{
+        //       "name": "Prevention",
+        //       "value": "Primary_purpose",
+        //       "children": [{
+        //         "name": "Safety Study",
+        //         "value": "Endpoint_classification",
+        //         "children": [{
+        //           "name": "Anticipated",
+        //           "value": "Enrollment_type",
+        //           "children": [{
+        //             "name": "Male",
+        //             "value": "Gender",
+        //             "children": [{
+        //               "name": "Yes",
+        //               "value": "Is_health_volunteers",
+        //               "children": [{
+        //                 "name": "Case-Crossover",
+        //                 "value": "Model",
+        //                 "children": [{
+        //                   "name": "Random Sample",
+        //                   "value": "Allocation",
+        //                   "children": [{
+        //                     "name": "Open Label",
+        //                     "value": "Masking",
+        //                     "children": [{
+        //                       "name": "Cross-Sectional",
+        //                       "value": "Time_perspective",
+        //                       "children": [{
+        //                         "name": "Probability Sample",
+        //                         "value": "Sampling_method"
+        //                       }]
+        //                     }]
+        //                   }]
+        //                 }]
+        //               }]
+        //             }]
+        //           }]
+        //         }]
+        //       }]
+        //     }]
+        //   }]
+        // }
+        dataVis();
+      })
+
+      function dataVis() {
+        $('#save-vis').html('');
+
+        const svgWidth = 1200, svgHieght = 110;
+        const xMargin = 40, yMargin = 0;
+
+        var svg = d3.select(`#save-vis`)
+        .append('svg')
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .attr('viewBox', '0 0 ' + svgWidth + ', ' + svgHieght + '');
+
+        var g = svg.append('g')
+        .attr('class', 'save-tree-diagram')
+        .attr('transform', 'translate(' + (xMargin) + ', ' + (yMargin) + ')');
+
+        var tree = d3.tree()
+        .size([svgHieght - yMargin*2, svgWidth - xMargin*2]);
+
+        var node = d3.hierarchy(dataset, function(d) {
+          return d.children;
+        });
+        node = tree(node);
+
+        var links = g.selectAll('.link')
+        .data(node.descendants().slice(1))
+        .enter()
+        .append('path')
+        .attr('class', 'link')
+        .attr('id', function(d) {
+          var temp = d.data.value;
+          temp = temp.replace(' ', '_').replace('/', '');
+          return temp;
+        })
+        .attr('fill', 'none')
+        .attr('stroke', '#d9d9d9')
+        .attr('d', function(d) {
+          return 'M' + d.parent.y + ',' + d.parent.x
+          + 'C' + (d.y + d.parent.y) / 2 + ',' + d.parent.x
+          + ' ' + (d.y + d.parent.y) / 2 + ',' + d.x
+          + ' ' + d.y  + ',' + d.x;
+        })
+
+        var linkText = g.selectAll('.linkText')
+        .data(node.descendants().slice(1))
+        .enter()
+        .append('text')
+        .attr('class', 'linkText')
+        .attr('text-anchor', 'middle')
+        .attr('dy', '-5')
+        .style('text-transform', 'capitalize')
+        .style('font-size', '7px')
+        .style('font-family', 'Lora, serif')
+        .style('fill', 'rgba(0, 0, 0, .35)')
+        .style('font-weight', '600')
+        .style('opacity', 1)
+        .append("textPath")
+        .attr("xlink:href", function(d) {
+          console.log(d);
+          var temp = d.data.value;
+          temp = temp.replace(' ', '_').replace('/', '');
+
+          return '#' + temp;
+          // if(d.depth != 0) {
+          //   if(tempArr[d.depth] == undefined) {
+          //     tempArr[d.depth] = 1;
+          //
+          //     var temp = d.data.name;
+          //     temp = temp.replace(' ', '_').replace('/', '') + d.depth;
+          //
+          //   }
+          // }
+        })
+        .attr("startOffset", "50%")
+        .text(function(d) {
+          return d.data.value;
+        })
+
+        /* nodes */
+
+        var nodes = g.selectAll('.node')
+        .data(node.descendants())
+        .enter()
+        .append('g')
+        .attr('class', 'node')
+        .attr('transform', function(d) { return 'translate(' + d.y + ',' + d.x + ')'; })
+
+        nodes.append('circle')
+        .attr('class', 'circle')
+        .attr('r', 7)
+        .attr('fill', function(d) {
+          return '#fff';
+        })
+        .attr('stroke', 'rgb(120, 200, 80)')
+        .attr('stroke-width', 2)
+
+        nodes.append('text')
+        .text(function(d) { return d.data.name })
+        .attr('text-anchor', 'middle')
+        .attr('y', function(d, index) {
+          if(index%2 == 0) {
+            return '-17px';
+          } else {
+            return '26px';
+          }
+        })
+        .style('font-size', '15px')
+        .style('fill', 'black')
+        .style('cursor', 'pointer')
+      }
+    </script>
+  </body>
+</html>

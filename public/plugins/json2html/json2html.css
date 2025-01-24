@@ -1,0 +1,30 @@
+#page {min-height:600px;}
+.modal-body > .package {
+  overflow: hidden;
+  padding: 10px 12px;
+  margin: 0;
+}
+.package {padding:7px;border-radius:3px;margin:5px 0px;}
+.header {cursor:pointer;}
+
+.name {color:gray;}
+
+.array {background-color:rgba(245, 245, 245, .5);border:thin solid #e5e5e5;}
+.object {background-color:rgba(252, 252, 252, .5);border:thin solid #e5e5e5;}
+.string {color:black; padding-bottom: 5px;}
+.number {color:green;}
+.function {color:red;}
+
+.open .children {display:block;}
+.closed .children {display:none;}
+
+.arrow {position: relative; top: 1px; margin: 1px 7px 0 0; background-size: contain; background-repeat:no-repeat; background-color:transparent; height:10px; width:10px; display:inline-block;}
+
+.open .arrow {background-image:url("img/arrow_open.png");}
+.closed .arrow {background-image:url("img/arrow_close.png");}
+
+.type {position: relative; top: 2px; color:gray;font-size:8pt;float:right;}
+
+.hide {display:none;}
+
+#main {width:100%;height:500px;overflow-y:scroll;}
